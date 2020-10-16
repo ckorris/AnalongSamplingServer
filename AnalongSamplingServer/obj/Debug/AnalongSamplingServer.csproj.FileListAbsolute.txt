@@ -1,0 +1,6 @@
+C:\Users\56kpa\repos\AnalongSamplingServer\AnalongSamplingServer\bin\Debug\AnalongSamplingServer.exe.config
+C:\Users\56kpa\repos\AnalongSamplingServer\AnalongSamplingServer\obj\Debug\AnalongSamplingServer.csprojResolveAssemblyReference.cache
+C:\Users\56kpa\repos\AnalongSamplingServer\AnalongSamplingServer\bin\Debug\AnalongSamplingServer.exe
+C:\Users\56kpa\repos\AnalongSamplingServer\AnalongSamplingServer\bin\Debug\AnalongSamplingServer.pdb
+C:\Users\56kpa\repos\AnalongSamplingServer\AnalongSamplingServer\obj\Debug\AnalongSamplingServer.exe
+C:\Users\56kpa\repos\AnalongSamplingServer\AnalongSamplingServer\obj\Debug\AnalongSamplingServer.pdb
