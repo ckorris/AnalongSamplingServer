@@ -19,12 +19,17 @@ namespace AnalongSamplingServer
             //Parse into listeners
             _tempSerial = new SerialDataSource(this, "COM3");
             //Start each listener
+            _tempSerial.AddSink(new ClipboardDataSink());
         }
 
         public void Run()
         {
             while (true)
             {
+                var cmd = Console.ReadLine();
+
+                _tempSerial.TempSend(1);
+
                 Thread.Sleep(5);
             }
         }

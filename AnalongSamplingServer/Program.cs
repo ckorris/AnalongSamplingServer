@@ -8,6 +8,7 @@ namespace AnalongSamplingServer
 {
     class Program
     {
+        [STAThread]
         static void Main(string[] args)
         {
             var parsedArguments = new ParsedArguments(args);

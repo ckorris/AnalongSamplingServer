@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 
@@ -12,23 +13,28 @@ namespace AnalongSamplingServer
 
         private readonly Thread _recevingThread;
         private readonly Thread _processingThread;
-        private bool _isRunning;
+        protected bool IsRunning { get; private set; }
 
         protected readonly Server Server;
 
         protected DataSource(Server server)
         {
-            _isRunning = true;
+            IsRunning = true;
             _processingThread = new Thread(ProcessSamplesThread);
+            _processingThread.SetApartmentState(ApartmentState.STA); //Set the thread to STA
+
             _recevingThread = new Thread(ReceiverThread);
             Server = server;
+
+            _processingThread.Start();
+            _recevingThread.Start();
         }
 
         protected abstract void ReceiveLoop();
 
         private void ReceiverThread()
         {
-            while (_isRunning)
+            while (IsRunning)
             {
                 ReceiveLoop();
             }
@@ -52,9 +58,10 @@ namespace AnalongSamplingServer
             _pendingSamplePackets.Enqueue(newPacket);
         }
 
+        [STAThread]
         private void ProcessSamplesThread()
         {
-            while (_isRunning)
+            while (IsRunning)
             {
                 SamplePacket samplePacket;
                 while (_pendingSamplePackets.TryDequeue(out samplePacket))
@@ -70,7 +77,7 @@ namespace AnalongSamplingServer
 
         public void Stop()
         {
-            _isRunning = false;
+            IsRunning = false;
             _processingThread.Join();
             _recevingThread.Join();
         }

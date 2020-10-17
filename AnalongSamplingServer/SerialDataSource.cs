@@ -1,49 +1,91 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.IO;
 using System.IO.Ports;
-using System.Text;
+using System.Runtime.CompilerServices;
 using System.Threading;
 
 namespace AnalongSamplingServer
 {
     class SerialDataSource : DataSource
     {
-
-
-        private int discard = 0;
+        private readonly AutoResetEvent _serialReady = new AutoResetEvent(false);
+        private readonly SerialPort _serialPort;
 
         public SerialDataSource(Server server, string comPort) : base(server)
         {
-            var serialPort = new SerialPort(
+            _serialPort = new SerialPort(
                 comPort,
-                56700,
+                57600,
                 Parity.None,
                 8
             );
 
-            
+            _serialPort.Open();
+            _serialReady.Set();
+        }
 
-            serialPort.DataReceived += (sender, serialDataReceivedEventArgs) =>
-            {
-                var bytesToRead = serialPort.BytesToRead;
-                var byteBuffer = new Byte[bytesToRead];
-                var data = serialPort.Read(byteBuffer, 0, bytesToRead);
+        public void TempSend(int value)
+        {
+            var ca = new char[1] { (char)value };
 
-                //Console.WriteLine($"Read {data} bytes of data from micro");
+            var bytes = new byte[1];
+            bytes[0] = 1;
 
-                var asString = Encoding.UTF8.GetString(byteBuffer);
-
-                    Console.Write(asString);
-
-               
-            };
-
-            serialPort.Open();
+            _serialPort.Write(bytes, 0, 1);
         }
 
         protected override void ReceiveLoop()
         {
-            Thread.Sleep(1);
+            _serialReady.WaitOne();
+
+            var reader = new BinaryReader(_serialPort.BaseStream);
+
+            while(_serialPort.BytesToRead > 0)
+            {
+                _serialPort.ReadByte();
+            }
+
+
+            while (IsRunning)
+            {
+                if (!ValidateMagicValue(reader))
+                {
+                    continue;
+                }
+
+                Console.WriteLine("Got magic");
+                var packet = SamplePacket.ReadFromStream(reader);
+                Console.WriteLine("Got Packet");
+                Console.Write(packet.ToString());
+                Console.WriteLine("-----");
+
+                OnDataReady(packet);
+            }
+        }
+
+        readonly byte[] expectedBytes = new byte[]
+        {
+                        0,0,0,0,
+                        0xFF,0xFF,0xFF,0xFF,
+                        0xBF,0xBF,0x7A,0x7A
+        };
+
+        private bool ValidateMagicValue(BinaryReader reader)
+        {
+            foreach (var value in expectedBytes)
+            {
+                var serialValue = reader.ReadByte();
+                if (value != serialValue)
+                {
+                    Console.WriteLine($"Magic failed: expected {value} but got {serialValue}");
+                    return false;
+                }
+                else
+                {
+                    Console.WriteLine($"Magic OK: expected {value} and got {serialValue}");
+                }
+            }
+            return true;
         }
     }
 }
