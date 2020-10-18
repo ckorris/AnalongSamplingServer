@@ -15,7 +15,7 @@ namespace AnalongSamplingServer
         {
             _serialPort = new SerialPort(
                 comPort,
-                57600,
+                921600,
                 Parity.None,
                 8
             );

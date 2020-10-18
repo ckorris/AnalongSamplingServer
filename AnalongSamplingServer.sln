@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30611.23
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnalongSamplingServer", "AnalongSamplingServer\AnalongSamplingServer.csproj", "{5E9AF9CF-396E-41B4-887D-D6EEAA1CFAB8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UI", "UI\UI.csproj", "{7405BF35-EE84-4EB3-BB5B-CD84490EB5F8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,8 +17,15 @@ Global
 		{5E9AF9CF-396E-41B4-887D-D6EEAA1CFAB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5E9AF9CF-396E-41B4-887D-D6EEAA1CFAB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5E9AF9CF-396E-41B4-887D-D6EEAA1CFAB8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7405BF35-EE84-4EB3-BB5B-CD84490EB5F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7405BF35-EE84-4EB3-BB5B-CD84490EB5F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7405BF35-EE84-4EB3-BB5B-CD84490EB5F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7405BF35-EE84-4EB3-BB5B-CD84490EB5F8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {118BF590-B09B-4EB7-BA4E-39EE8316D672}
 	EndGlobalSection
 EndGlobal

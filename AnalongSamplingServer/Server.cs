@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace AnalongSamplingServer
 {
-    class Server
+    public class Server
     {
         private ParsedArguments _arguments;
 
@@ -22,16 +22,26 @@ namespace AnalongSamplingServer
             _tempSerial.AddSink(new ClipboardDataSink());
         }
 
+        public void TempAddSink(IDataSink sink)
+        {
+            _tempSerial.AddSink(sink);
+        }
+
         public void Run()
         {
-            while (true)
+            //while (true)
             {
-                var cmd = Console.ReadLine();
+               // var cmd = Console.ReadLine();
 
-                _tempSerial.TempSend(1);
+               // _tempSerial.TempSend(1);
 
-                Thread.Sleep(5);
+               // Thread.Sleep(5);
             }
+        }
+
+        public void TempGetsample()
+        {
+            _tempSerial.TempSend(1);
         }
     }
 }

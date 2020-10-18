@@ -1,0 +1,14 @@
+﻿<Window x:Class="UI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:UI"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <WpfPlot Name="TheGraph" HorizontalAlignment="Left" Height="333" Margin="45,35,0,0" VerticalAlignment="Top" Width="701" Loaded="WpfPlot_Loaded"/>
+        <Button Content="SEND IT" HorizontalAlignment="Left" Margin="94,373,0,0" VerticalAlignment="Top" Width="596" Height="47" Click="Button_Click"/>
+
+    </Grid>
+</Window>

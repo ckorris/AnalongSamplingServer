@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AnalongSamplingServer
 {
-    interface IDataSink
+    public interface IDataSink
     {
         void IngestNewSamples(SamplePacket samplePacket);
     }

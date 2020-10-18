@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AnalongSamplingServer
 {
-    class ParsedArguments
+    public class ParsedArguments
     {
 
         public ParsedArguments(string[] cmdArgs)
