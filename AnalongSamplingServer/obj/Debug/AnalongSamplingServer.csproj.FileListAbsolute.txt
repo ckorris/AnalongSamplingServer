@@ -5,3 +5,10 @@ C:\Users\56kpa\repos\AnalongSamplingServer\AnalongSamplingServer\obj\Debug\Analo
 C:\Users\56kpa\repos\AnalongSamplingServer\AnalongSamplingServer\bin\Debug\AnalongSamplingServer.dll.config
 C:\Users\56kpa\repos\AnalongSamplingServer\AnalongSamplingServer\bin\Debug\AnalongSamplingServer.dll
 C:\Users\56kpa\repos\AnalongSamplingServer\AnalongSamplingServer\obj\Debug\AnalongSamplingServer.dll
+C:\Projects\AnalongSamplingServer\AnalongSamplingServer\bin\Debug\AnalongSamplingServer.dll.config
+C:\Projects\AnalongSamplingServer\AnalongSamplingServer\bin\Debug\AnalongSamplingServer.dll
+C:\Projects\AnalongSamplingServer\AnalongSamplingServer\bin\Debug\AnalongSamplingServer.pdb
+C:\Projects\AnalongSamplingServer\AnalongSamplingServer\obj\Debug\AnalongSamplingServer.csprojAssemblyReference.cache
+C:\Projects\AnalongSamplingServer\AnalongSamplingServer\obj\Debug\AnalongSamplingServer.csproj.CoreCompileInputs.cache
+C:\Projects\AnalongSamplingServer\AnalongSamplingServer\obj\Debug\AnalongSamplingServer.dll
+C:\Projects\AnalongSamplingServer\AnalongSamplingServer\obj\Debug\AnalongSamplingServer.pdb
