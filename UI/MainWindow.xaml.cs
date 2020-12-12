@@ -41,9 +41,9 @@ namespace UI
             int pointCount = (int)1e6;
             int lineCount = 5;
 
-            plt.Title("Signal Plot Quickstart (5 million points)");
-            plt.YLabel("Vertical Units");
-            plt.XLabel("Horizontal Units");
+            plt.Title("IR Light Received Over Time");
+            plt.YLabel("Power");
+            plt.XLabel("Time (ms)");
 
             plt.Resize();
             TheGraph.Render();
@@ -86,7 +86,10 @@ namespace UI
                     ClearLastPlots();
                 }
 
-                PlottableSignal newPlot = plt.PlotSignal(ToDouble(packet.Samples), label: "Device " + packet.DeviceID.ToString());
+                double microSecondsPerSample = packet.SamplingDurationUs / packet.SampleCount;
+                double milliSecondsPerSample = microSecondsPerSample / 1000d;
+
+                PlottableSignal newPlot = plt.PlotSignal(ToDouble(packet.Samples), sampleRate: milliSecondsPerSample, label: "Device " + packet.DeviceID.ToString());
                 plt.Resize();
                 _last.Add(newPlot);
 

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:UI"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="800" Width="1280">
     <Viewbox>
     <Grid>
         <WpfPlot Name="TheGraph" HorizontalAlignment="Left" Height="333" Margin="45,35,0,0" VerticalAlignment="Top" Width="701" Loaded="WpfPlot_Loaded"/>
