@@ -6,9 +6,11 @@
         xmlns:local="clr-namespace:UI"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
+    <Viewbox>
     <Grid>
         <WpfPlot Name="TheGraph" HorizontalAlignment="Left" Height="333" Margin="45,35,0,0" VerticalAlignment="Top" Width="701" Loaded="WpfPlot_Loaded"/>
         <Button Content="SEND IT" HorizontalAlignment="Left" Margin="94,373,0,0" VerticalAlignment="Top" Width="596" Height="47" Click="Button_Click"/>
 
     </Grid>
+    </Viewbox>
 </Window>

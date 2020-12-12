@@ -58,7 +58,8 @@ namespace UI
         public class GraphDataSink : IDataSink
         {
             private MainWindow _window;
-            private Plottable _last;
+            //private Plottable _last;
+            private List<Plottable> _last = new List<Plottable>();
 
             public GraphDataSink (MainWindow window)
             {
@@ -80,17 +81,37 @@ namespace UI
             {
                 var plt = _window.TheGraph.plt;
 
-                if(_last != null)
+                if (packet.SampleID == 0) //Could be done better, like a flag.
                 {
-                    plt.Remove(_last);
+                    ClearLastPlots();
                 }
 
-                _last = plt.PlotSignal(ToDouble(packet.Samples));
-
+                PlottableSignal newPlot = plt.PlotSignal(ToDouble(packet.Samples), label: "Device " + packet.DeviceID.ToString());
                 plt.Resize();
+                _last.Add(newPlot);
+
+                plt.Legend();
                 _window.TheGraph.Render();
             }
-                
+
+            private void IngestMainThread(List<SamplePacket> packets)
+            {
+                var plt = _window.TheGraph.plt;
+
+                ClearLastPlots();
+
+                for (int i = 0; i < packets.Count; i++)
+                {
+                    SamplePacket packet = packets[i]; //Shorthand.
+                    PlottableSignal newPlot = plt.PlotSignal(ToDouble(packet.Samples), yOffset: i * 500, label: "Device " + packet.DeviceID.ToString());
+                    plt.Resize();
+
+                    _last.Add(newPlot);
+                }
+
+                plt.Legend();
+                _window.TheGraph.Render();
+            }
 
             private double[] ToDouble (ushort[] values)
             {
@@ -101,7 +122,22 @@ namespace UI
                 }
                 return result;
             }
+
+            private void ClearLastPlots()
+            {
+                if (_last != null)
+                {
+                    Plot plt = _window.TheGraph.plt;
+
+                    for (int i = 0; i < _last.Count; i++)
+                    {
+                        plt.Remove(_last[i]);
+                    }
+                }
+            }
         }
+
+
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
