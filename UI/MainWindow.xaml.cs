@@ -87,9 +87,10 @@ namespace UI
                 }
 
                 double microSecondsPerSample = packet.SamplingDurationUs / packet.SampleCount;
-                double milliSecondsPerSample = microSecondsPerSample / 1000d;
+                //double milliSecondsPerSample = microSecondsPerSample / 1000d;
+                double sampleRateMS = 1000d / microSecondsPerSample;
 
-                PlottableSignal newPlot = plt.PlotSignal(ToDouble(packet.Samples), sampleRate: milliSecondsPerSample, label: "Device " + packet.DeviceID.ToString());
+                PlottableSignal newPlot = plt.PlotSignal(ToDouble(packet.Samples), sampleRate: sampleRateMS, label: "Device " + packet.DeviceID.ToString());
                 plt.Resize();
                 _last.Add(newPlot);
 
