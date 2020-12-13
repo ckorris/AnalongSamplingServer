@@ -10,7 +10,9 @@ namespace AnalongSamplingServer
         public int DeviceID;
         public int SampleID;
 
-        public int SamplingDurationUs;
+        public int StartTimeUs;
+        public int EndTimeUs;
+
         public int AnalongInPins;//Number of AnalogIn pins being read
 
         public int SampleCount;
@@ -19,22 +21,25 @@ namespace AnalongSamplingServer
         public static SamplePacket ReadFromStream(BinaryReader reader)
         {
             var packet = new SamplePacket();
-            try { 
-            packet.DeviceID = reader.ReadInt32();
-            packet.SampleID = reader.ReadInt32();
-
-            packet.SamplingDurationUs = reader.ReadInt32();
-            packet.AnalongInPins = reader.ReadInt32();
-
-            packet.SampleCount = reader.ReadInt32();
-            packet.Samples = new ushort[packet.SampleCount];
-
-            for(int i = 0; i < packet.SampleCount; i++)
+            try
             {
-                packet.Samples[i] = reader.ReadUInt16();
+                packet.DeviceID = reader.ReadInt32();
+                packet.SampleID = reader.ReadInt32();
+
+                packet.StartTimeUs = reader.ReadInt32();
+                packet.EndTimeUs = reader.ReadInt32();
+
+                packet.AnalongInPins = reader.ReadInt32();
+
+                packet.SampleCount = reader.ReadInt32();
+                packet.Samples = new ushort[packet.SampleCount];
+
+                for (int i = 0; i < packet.SampleCount; i++)
+                {
+                    packet.Samples[i] = reader.ReadUInt16();
+                }
             }
-            }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Console.Write(e);
             }
@@ -47,22 +52,23 @@ namespace AnalongSamplingServer
 
             builder.Append($"Device ID: {DeviceID}\n");
             builder.Append($"Sample ID: {SampleID}\n");
-            builder.Append($"Sampling Duration uS: {SamplingDurationUs}\n");
+            builder.Append($"Start Time uS: {StartTimeUs}\n");
+            builder.Append($"End Time uS: {EndTimeUs}\n");
             builder.Append($"Analong in pins: {AnalongInPins}\n\n");
             builder.Append($"Samples: {SampleCount}\n");
             if (Samples.Length > 100)
             {
-           //     builder.Append($"Samples: {SampleCount} (Truncating to 100)\n");
+                //     builder.Append($"Samples: {SampleCount} (Truncating to 100)\n");
             }
             else
             {
-            //    builder.Append($"Samples: {SampleCount}\n");
+                //    builder.Append($"Samples: {SampleCount}\n");
             }
 
             var count = Math.Min(100, Samples.Length);
-            for(int x = 0; x < count; x++)
+            for (int x = 0; x < count; x++)
             {
-               // builder.AppendLine($"{Samples[x]}");
+                // builder.AppendLine($"{Samples[x]}");
             }
 
             return builder.ToString();

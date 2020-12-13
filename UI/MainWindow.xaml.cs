@@ -86,11 +86,14 @@ namespace UI
                     ClearLastPlots();
                 }
 
-                double microSecondsPerSample = packet.SamplingDurationUs / packet.SampleCount;
+                double sampleDuration = packet.EndTimeUs - packet.StartTimeUs;
+                double microSecondsPerSample = sampleDuration / packet.SampleCount; 
                 //double milliSecondsPerSample = microSecondsPerSample / 1000d;
                 double sampleRateMS = 1000d / microSecondsPerSample;
 
-                PlottableSignal newPlot = plt.PlotSignal(ToDouble(packet.Samples), sampleRate: sampleRateMS, label: "Device " + packet.DeviceID.ToString());
+                double xOffsetMs = packet.StartTimeUs / 1000d;
+
+                PlottableSignal newPlot = plt.PlotSignal(ToDouble(packet.Samples), sampleRate: sampleRateMS, label: "Device " + packet.DeviceID.ToString(), xOffset: xOffsetMs);
                 plt.Resize();
                 _last.Add(newPlot);
 
