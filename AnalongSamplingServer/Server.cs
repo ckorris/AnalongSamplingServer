@@ -13,11 +13,11 @@ namespace AnalongSamplingServer
 
         private SerialDataSource _tempSerial;
 
-        public Server(ParsedArguments args)
+        public Server(ParsedArguments args, string comPort = "COM7")
         {
             _arguments = args;
             //Parse into listeners
-            _tempSerial = new SerialDataSource(this, "COM3");
+            _tempSerial = new SerialDataSource(this, comPort);
             //Start each listener
             _tempSerial.AddSink(new ClipboardDataSink());
         }
@@ -42,6 +42,12 @@ namespace AnalongSamplingServer
         public void TempGetsample()
         {
             _tempSerial.TempSend(1);
+        }
+
+        public void Close()
+        {
+            _tempSerial.Stop();
+
         }
     }
 }

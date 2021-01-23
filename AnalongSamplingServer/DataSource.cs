@@ -75,7 +75,7 @@ namespace AnalongSamplingServer
             }
         }
 
-        public void Stop()
+        public virtual void Stop()
         {
             IsRunning = false;
             _processingThread.Join();

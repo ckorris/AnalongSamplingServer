@@ -34,13 +34,15 @@ namespace AnalongSamplingServer
             _serialPort.Write(bytes, 0, 1);
         }
 
+
+
         protected override void ReceiveLoop()
         {
             _serialReady.WaitOne();
 
             var reader = new BinaryReader(_serialPort.BaseStream);
 
-            while(_serialPort.BytesToRead > 0)
+            while (_serialPort.BytesToRead > 0 && IsRunning == true)
             {
                 _serialPort.ReadByte();
             }
@@ -86,6 +88,19 @@ namespace AnalongSamplingServer
                 }
             }
             return true;
+        }
+
+        public override void Stop()
+        {
+            if (_serialPort != null && _serialPort.IsOpen == true)
+            {
+                _serialPort.Close();
+                _serialPort.Dispose();
+            }
+
+            base.Stop();
+
+            _serialReady.Set();
         }
     }
 }

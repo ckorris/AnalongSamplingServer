@@ -1,0 +1,7 @@
+C:\Projects\AnalongSamplingServer\AnalongSamplingServer\bin\Release\AnalongSamplingServer.dll.config
+C:\Projects\AnalongSamplingServer\AnalongSamplingServer\bin\Release\AnalongSamplingServer.dll
+C:\Projects\AnalongSamplingServer\AnalongSamplingServer\bin\Release\AnalongSamplingServer.pdb
+C:\Projects\AnalongSamplingServer\AnalongSamplingServer\obj\Release\AnalongSamplingServer.csproj.CoreCompileInputs.cache
+C:\Projects\AnalongSamplingServer\AnalongSamplingServer\obj\Release\AnalongSamplingServer.dll
+C:\Projects\AnalongSamplingServer\AnalongSamplingServer\obj\Release\AnalongSamplingServer.pdb
+C:\Projects\AnalongSamplingServer\AnalongSamplingServer\obj\Release\AnalongSamplingServer.csprojAssemblyReference.cache

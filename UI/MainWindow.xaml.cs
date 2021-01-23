@@ -93,6 +93,7 @@ namespace UI
                 double sampleDuration = packet.EndTimeUs - packet.StartTimeUs;
                 double microSecondsPerSample = sampleDuration / packet.SampleCount; 
                 double sampleRateMS = 1000d / microSecondsPerSample;
+                double startOffset = (packet.StartTimeUs == 0) ? 0 : packet.StartTimeUs / 1000d;
 
                 //Clear the previous plot so that we can extend it with the old and new data combined. 
                 if(devicePlots.ContainsKey(packet.DeviceID))
@@ -112,7 +113,7 @@ namespace UI
                 //Plot all the data up to this point for the given device ID.
                 //PlottableSignal newPlot = plt.PlotSignal(ToDouble(packet.Samples), sampleRate: sampleRateMS, label: "Device " + packet.DeviceID.ToString());
                 System.Drawing.Color plotColor = ColorUtilities.GetColorByIndex(packet.DeviceID);
-                PlottableSignal newPlot = plt.PlotSignal(ToDouble(deviceSamples[packet.DeviceID].ToArray()), sampleRate: sampleRateMS, label: "Device " + packet.DeviceID.ToString(), color: plotColor);
+                PlottableSignal newPlot = plt.PlotSignal(ToDouble(deviceSamples[packet.DeviceID].ToArray()), sampleRate: sampleRateMS, xOffset: startOffset, label: "Device " + packet.DeviceID.ToString(), color: plotColor);
                 plt.Resize();
                 devicePlots[packet.DeviceID] = newPlot;
 
