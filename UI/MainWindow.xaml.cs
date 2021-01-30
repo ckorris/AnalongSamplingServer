@@ -62,7 +62,15 @@ namespace UI
             //private List<Plottable> _last = new List<Plottable>();
 
             private Dictionary<int, Plottable> devicePlots = new Dictionary<int, Plottable>();
-            private Dictionary<int, List<ushort>> deviceSamples = new Dictionary<int, List<ushort>>();
+            //private Dictionary<int, List<ushort>> deviceSamples = new Dictionary<int, List<ushort>>();
+            private Dictionary<int, SampleCache> deviceSamples = new Dictionary<int, SampleCache>();
+
+            private struct SampleCache
+            {
+                public List<ushort> sampleValues;
+                public List<double> timeIndexesMS;
+            }
+
 
             public GraphDataSink (MainWindow window)
             {
@@ -95,8 +103,15 @@ namespace UI
                 double sampleRateMS = 1000d / microSecondsPerSample;
                 double startOffset = (packet.StartTimeUs == 0) ? 0 : packet.StartTimeUs / 1000d;
 
+                //Make X values.
+                List<double> xValues = new List<double>();
+                for (int i = 0; i < packet.SampleCount; i++)
+                {
+                    xValues.Add(startOffset + i * microSecondsPerSample);
+                }
+
                 //Clear the previous plot so that we can extend it with the old and new data combined. 
-                if(devicePlots.ContainsKey(packet.DeviceID))
+                if (devicePlots.ContainsKey(packet.DeviceID))
                 {
                     _window.TheGraph.plt.Remove(devicePlots[packet.DeviceID]);
                 }
@@ -104,16 +119,25 @@ namespace UI
                 //If we haven't yet made a list for the data for this device ID, make a new one. 
                 if(deviceSamples.ContainsKey(packet.DeviceID) == false)
                 {
-                    deviceSamples.Add(packet.DeviceID, new List<ushort>());
+                    deviceSamples.Add(packet.DeviceID, new SampleCache()
+                    {
+                        sampleValues = new List<ushort>(),
+                        timeIndexesMS = new List<double>()
+                    });
                 }
 
                 //Add the new data to the old.
-                deviceSamples[packet.DeviceID].AddRange(packet.Samples.ToList());
+                deviceSamples[packet.DeviceID].sampleValues.AddRange(packet.Samples.ToList());
+                deviceSamples[packet.DeviceID].timeIndexesMS.AddRange(xValues);
+
+
 
                 //Plot all the data up to this point for the given device ID.
                 //PlottableSignal newPlot = plt.PlotSignal(ToDouble(packet.Samples), sampleRate: sampleRateMS, label: "Device " + packet.DeviceID.ToString());
                 System.Drawing.Color plotColor = ColorUtilities.GetColorByIndex(packet.DeviceID);
-                PlottableSignal newPlot = plt.PlotSignal(ToDouble(deviceSamples[packet.DeviceID].ToArray()), sampleRate: sampleRateMS, xOffset: startOffset, label: "Device " + packet.DeviceID.ToString(), color: plotColor);
+                //PlottableSignal newPlot = plt.PlotSignal(ToDouble(deviceSamples[packet.DeviceID].ToArray()), sampleRate: sampleRateMS, xOffset: startOffset, label: "Device " + packet.DeviceID.ToString(), color: plotColor);
+                PlottableSignalXY newPlot = plt.PlotSignalXY(deviceSamples[packet.DeviceID].timeIndexesMS.ToArray(), ToDouble(deviceSamples[packet.DeviceID].sampleValues.ToArray()),  
+                    label: "Device " + packet.DeviceID.ToString(), color: plotColor);
                 plt.Resize();
                 devicePlots[packet.DeviceID] = newPlot;
 
