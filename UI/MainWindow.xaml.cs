@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using AnalongSamplingServer;
+using SpinAnalysis;
 
 namespace UI
 {
@@ -62,16 +63,16 @@ namespace UI
             //private List<Plottable> _last = new List<Plottable>();
 
             private Dictionary<int, Plottable> devicePlots = new Dictionary<int, Plottable>();
-            //private Dictionary<int, List<ushort>> deviceSamples = new Dictionary<int, List<ushort>>();
-            private Dictionary<int, SampleCache> deviceSamples = new Dictionary<int, SampleCache>();
+
+            /*private Dictionary<int, SampleCache> deviceSamples = new Dictionary<int, SampleCache>();
 
             private struct SampleCache
             {
                 public List<ushort> sampleValues;
                 public List<double> timeIndexesMS;
             }
-
-
+            */
+            private RawDeviceRegistrar _deviceRegistrar = new RawDeviceRegistrar();
             public GraphDataSink (MainWindow window)
             {
                 _window = window;
@@ -99,7 +100,8 @@ namespace UI
 
                 //TODO: This updates all previous samples with the same overall sample rate. They should be equally accurate in theory, but errors will present incorrectly. Fix.
                 double sampleDuration = packet.EndTimeUs - packet.StartTimeUs;
-                double microSecondsPerSample = sampleDuration / packet.SampleCount; 
+                double microSecondsPerSample = sampleDuration / packet.SampleCount;
+                double milliSecondsPerSample = microSecondsPerSample / 1000d;
                 double sampleRateMS = 1000d / microSecondsPerSample;
                 double startOffset = (packet.StartTimeUs == 0) ? 0 : packet.StartTimeUs / 1000d;
 
@@ -107,7 +109,15 @@ namespace UI
                 List<double> xValues = new List<double>();
                 for (int i = 0; i < packet.SampleCount; i++)
                 {
-                    xValues.Add(startOffset + i * microSecondsPerSample);
+                    xValues.Add(startOffset + i * milliSecondsPerSample);
+                }
+
+                //DEBUG: Offset Y values by device number so we can see them better. 
+                {
+                    for(int i = 0; i < packet.Samples.Length; i++) 
+                    {
+                        //packet.Samples[i] += (ushort)(300 * packet.DeviceID);
+                    }
                 }
 
                 //Clear the previous plot so that we can extend it with the old and new data combined. 
@@ -141,7 +151,7 @@ namespace UI
                 plt.Resize();
                 devicePlots[packet.DeviceID] = newPlot;
 
-                plt.Legend();
+                plt.Legend(fontSize: 8);
                 _window.TheGraph.Render();
             }
 

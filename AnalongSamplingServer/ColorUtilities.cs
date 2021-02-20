@@ -27,7 +27,7 @@ namespace UI
             Color.Silver,
             Color.Crimson,
             Color.SlateGray,
-            Color.Honeydew,
+            Color.MediumPurple,
             Color.SpringGreen,
             Color.SteelBlue,
             Color.OrangeRed
