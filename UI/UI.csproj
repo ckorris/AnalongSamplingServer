@@ -41,6 +41,9 @@
     <Reference Include="ScottPlot.WPF, Version=4.0.42.0, Culture=neutral, PublicKeyToken=e53b06131e34a3aa, processorArchitecture=MSIL">
       <HintPath>..\packages\ScottPlot.WPF.4.0.42\lib\net472\ScottPlot.WPF.dll</HintPath>
     </Reference>
+    <Reference Include="SpinAnalysis">
+      <HintPath>..\packages\SpinAnalysis.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />

@@ -15,6 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using AnalongSamplingServer;
 using SpinAnalysis;
+using SpinAnalysis.DataStructs;
 
 namespace UI
 {
@@ -44,7 +45,7 @@ namespace UI
 
             plt.Title("IR Light Received Over Time");
             plt.YLabel("Power");
-            plt.XLabel("Time (ms)");
+            plt.XLabel("Time (μs)");
 
             plt.Resize();
             TheGraph.Render();
@@ -73,7 +74,7 @@ namespace UI
             }
             */
             private RawDeviceRegistrar _deviceRegistrar = new RawDeviceRegistrar();
-            public GraphDataSink (MainWindow window)
+            public GraphDataSink(MainWindow window)
             {
                 _window = window;
             }
@@ -81,10 +82,10 @@ namespace UI
 
             public void IngestNewSamples(SamplePacket samplePacket)
             {
-                Application.Current.Dispatcher.Invoke(new Action(() => 
+                Application.Current.Dispatcher.Invoke(new Action(() =>
                 {
                     IngestMainThread(samplePacket);
-                 }));
+                }));
 
 
             }
@@ -103,22 +104,21 @@ namespace UI
                 double microSecondsPerSample = sampleDuration / packet.SampleCount;
                 double milliSecondsPerSample = microSecondsPerSample / 1000d;
                 double sampleRateMS = 1000d / microSecondsPerSample;
-                double startOffset = (packet.StartTimeUs == 0) ? 0 : packet.StartTimeUs / 1000d;
+                double startOffset = (packet.StartTimeUs == 0) ? 0 : packet.StartTimeUs;
 
-                //Make X values.
-                List<double> xValues = new List<double>();
+                //Make list of raw samples formatted for SpinAnalysis library.
+                List<RawSample> newRawSamples = new List<RawSample>();
                 for (int i = 0; i < packet.SampleCount; i++)
                 {
-                    xValues.Add(startOffset + i * milliSecondsPerSample);
+                    RawSample newSample = new RawSample()
+                    {
+                        TimeStampUs = startOffset + i * microSecondsPerSample,
+                        Value = packet.Samples[i]
+                    };
+                    newRawSamples.Add(newSample);
                 }
 
-                //DEBUG: Offset Y values by device number so we can see them better. 
-                {
-                    for(int i = 0; i < packet.Samples.Length; i++) 
-                    {
-                        //packet.Samples[i] += (ushort)(300 * packet.DeviceID);
-                    }
-                }
+                _deviceRegistrar.AddRawSamples(packet.DeviceID, newRawSamples);
 
                 //Clear the previous plot so that we can extend it with the old and new data combined. 
                 if (devicePlots.ContainsKey(packet.DeviceID))
@@ -126,28 +126,16 @@ namespace UI
                     _window.TheGraph.plt.Remove(devicePlots[packet.DeviceID]);
                 }
 
-                //If we haven't yet made a list for the data for this device ID, make a new one. 
-                if(deviceSamples.ContainsKey(packet.DeviceID) == false)
-                {
-                    deviceSamples.Add(packet.DeviceID, new SampleCache()
-                    {
-                        sampleValues = new List<ushort>(),
-                        timeIndexesMS = new List<double>()
-                    });
-                }
+                //Make arrays for the time stamps and values.
+                double[] timeStamps;
+                double[] values;
 
-                //Add the new data to the old.
-                deviceSamples[packet.DeviceID].sampleValues.AddRange(packet.Samples.ToList());
-                deviceSamples[packet.DeviceID].timeIndexesMS.AddRange(xValues);
-
-
+                SampleSetUtilities.SplitSampleDataIntoArrays(_deviceRegistrar.DevicesByIndex[packet.DeviceID].RawSamples, out timeStamps, out values);
 
                 //Plot all the data up to this point for the given device ID.
-                //PlottableSignal newPlot = plt.PlotSignal(ToDouble(packet.Samples), sampleRate: sampleRateMS, label: "Device " + packet.DeviceID.ToString());
                 System.Drawing.Color plotColor = ColorUtilities.GetColorByIndex(packet.DeviceID);
-                //PlottableSignal newPlot = plt.PlotSignal(ToDouble(deviceSamples[packet.DeviceID].ToArray()), sampleRate: sampleRateMS, xOffset: startOffset, label: "Device " + packet.DeviceID.ToString(), color: plotColor);
-                PlottableSignalXY newPlot = plt.PlotSignalXY(deviceSamples[packet.DeviceID].timeIndexesMS.ToArray(), ToDouble(deviceSamples[packet.DeviceID].sampleValues.ToArray()),  
-                    label: "Device " + packet.DeviceID.ToString(), color: plotColor);
+                //PlottableSignalXY newPlot = plt.PlotSignalXY(deviceSamples[packet.DeviceID].timeIndexesMS.ToArray(), ToDouble(deviceSamples[packet.DeviceID].sampleValues.ToArray()),
+                PlottableSignalXY newPlot = plt.PlotSignalXY(timeStamps, values, label: "Device " + packet.DeviceID.ToString(), color: plotColor);
                 plt.Resize();
                 devicePlots[packet.DeviceID] = newPlot;
 
@@ -155,10 +143,10 @@ namespace UI
                 _window.TheGraph.Render();
             }
 
-            private double[] ToDouble (ushort[] values)
+            private double[] ToDouble(ushort[] values)
             {
                 var result = new double[values.Length];
-                for(int x = 0; x < values.Length; x++)
+                for (int x = 0; x < values.Length; x++)
                 {
                     result[x] = (double)values[x];
                 }
@@ -167,14 +155,14 @@ namespace UI
 
             private void ClearAllDataAndPlots()
             {
-                foreach(Plottable plottable in devicePlots.Values)
+                foreach (Plottable plottable in devicePlots.Values)
                 {
                     _window.TheGraph.plt.Remove(plottable);
                 }
 
                 devicePlots.Clear();
 
-                deviceSamples.Clear();
+                _deviceRegistrar.Clear();
             }
         }
 

@@ -42,3 +42,4 @@ C:\Projects\AnalongSamplingServer\UI\obj\Debug\UI.csproj.CoreCompileInputs.cache
 C:\Projects\AnalongSamplingServer\UI\obj\Debug\UI.csproj.CopyComplete
 C:\Projects\AnalongSamplingServer\UI\obj\Debug\UI.exe
 C:\Projects\AnalongSamplingServer\UI\obj\Debug\UI.pdb
+C:\Projects\AnalongSamplingServer\UI\bin\Debug\SpinAnalysis.dll
