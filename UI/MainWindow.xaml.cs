@@ -49,7 +49,6 @@ namespace UI
 
             plt.Resize();
             TheGraph.Render();
-
         }
 
         private void WpfPlot_Loaded(object sender, RoutedEventArgs e)
@@ -60,19 +59,10 @@ namespace UI
         public class GraphDataSink : IDataSink
         {
             private MainWindow _window;
-            //private Plottable _last;
-            //private List<Plottable> _last = new List<Plottable>();
 
             private Dictionary<int, Plottable> devicePlots = new Dictionary<int, Plottable>();
 
-            /*private Dictionary<int, SampleCache> deviceSamples = new Dictionary<int, SampleCache>();
 
-            private struct SampleCache
-            {
-                public List<ushort> sampleValues;
-                public List<double> timeIndexesMS;
-            }
-            */
             private RawDeviceRegistrar _deviceRegistrar = new RawDeviceRegistrar();
             public GraphDataSink(MainWindow window)
             {
@@ -171,6 +161,16 @@ namespace UI
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             _server.TempGetsample();
+        }
+
+        private void ExportButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void ImportButton_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

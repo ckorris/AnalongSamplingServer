@@ -13,7 +13,7 @@ namespace AnalongSamplingServer
 
         private SerialDataSource _tempSerial;
 
-        public Server(ParsedArguments args, string comPort = "COM3")
+        public Server(ParsedArguments args, string comPort = "COM7")
         {
             _arguments = args;
             //Parse into listeners
