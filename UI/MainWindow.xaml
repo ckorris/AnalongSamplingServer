@@ -12,6 +12,8 @@
             <Button Content="SEND IT" HorizontalAlignment="Left" Margin="618,397,0,0" VerticalAlignment="Top" Width="83" Height="33" Click="Button_Click"/>
             <Button Content="Export to .csv" HorizontalAlignment="Left" Margin="45,397,0,-2" VerticalAlignment="Top" Width="128" Height="35" Click="ExportButton_Click"/>
             <Button Content="Import .csv" HorizontalAlignment="Left" Margin="206,397,0,-2" VerticalAlignment="Top" Width="128" Height="35" Click="ImportButton_Click"/>
+            <Button Content="Process" HorizontalAlignment="Left" Height="33" Margin="369,397,0,0" VerticalAlignment="Top" Width="141" Click="ProcessButton_Click"/>
+
         </Grid>
     </Viewbox>
 </Window>

@@ -25,13 +25,17 @@ namespace UI
     public partial class MainWindow : Window
     {
         private Server _server;
+        private GraphDataSink _sink;
+
+
         public MainWindow()
         {
             var parsedArguments = new ParsedArguments(new string[] { });
             var server = new Server(parsedArguments);
             _server = server;
 
-            server.TempAddSink(new GraphDataSink(this));
+            _sink = new GraphDataSink(this);
+            server.TempAddSink(_sink);
 
             server.Run();
 
@@ -63,7 +67,8 @@ namespace UI
             private Dictionary<int, Plottable> devicePlots = new Dictionary<int, Plottable>();
 
 
-            private RawDeviceRegistrar _deviceRegistrar = new RawDeviceRegistrar();
+            public RawDeviceRegistrar DeviceRegistrar { get; private set; } = new RawDeviceRegistrar();
+
             public GraphDataSink(MainWindow window)
             {
                 _window = window;
@@ -102,13 +107,14 @@ namespace UI
                 {
                     RawSample newSample = new RawSample()
                     {
+                        DeviceNumber = packet.DeviceID,
                         TimeStampUs = startOffset + i * microSecondsPerSample,
                         Value = packet.Samples[i]
                     };
                     newRawSamples.Add(newSample);
                 }
 
-                _deviceRegistrar.AddRawSamples(packet.DeviceID, newRawSamples);
+                DeviceRegistrar.AddRawSamples(packet.DeviceID, newRawSamples);
 
                 //Clear the previous plot so that we can extend it with the old and new data combined. 
                 if (devicePlots.ContainsKey(packet.DeviceID))
@@ -120,7 +126,7 @@ namespace UI
                 double[] timeStamps;
                 double[] values;
 
-                SampleSetUtilities.SplitSampleDataIntoArrays(_deviceRegistrar.DevicesByIndex[packet.DeviceID].RawSamples, out timeStamps, out values);
+                SampleSetUtilities.SplitSampleDataIntoArrays(DeviceRegistrar.DevicesByIndex[packet.DeviceID].RawSamples, out timeStamps, out values);
 
                 //Plot all the data up to this point for the given device ID.
                 System.Drawing.Color plotColor = ColorUtilities.GetColorByIndex(packet.DeviceID);
@@ -152,7 +158,46 @@ namespace UI
 
                 devicePlots.Clear();
 
-                _deviceRegistrar.Clear();
+                DeviceRegistrar.Clear();
+            }
+
+            public void ProcessRaw()
+            {
+                Dictionary<int, DeviceProcessedSamples> processedSamples = new Dictionary<int, DeviceProcessedSamples>();
+
+                foreach(KeyValuePair<int, DeviceRawSamples> kvp in DeviceRegistrar.DevicesByIndex)
+                {
+                    DeviceProcessedSamples deviceSamples = DeviceProcessedSamples.CreateFromRaw(kvp.Value);
+                    processedSamples.Add(kvp.Key, deviceSamples);
+                }
+
+                ClearAllDataAndPlots();
+
+                foreach(KeyValuePair<int, DeviceProcessedSamples> kvp in processedSamples)
+                {
+                    System.Drawing.Color plotColor = ColorUtilities.GetColorByIndex(kvp.Key);
+
+                    //Make arrays for the time stamps and values.
+                    double[] timeStamps;
+                    double[] values;
+                    double[] differencesFromMean;
+                    double[] standardDeviationCount;
+
+
+                    SampleSetUtilities.SplitProcessedSampleDataIntoArrays(kvp.Value.ProcessedSamples, out timeStamps, out values, out differencesFromMean, out standardDeviationCount);
+
+                    //TEST
+                    for(int i = 0; i < values.Length; i++)
+                    {
+                        values[i] += 100;
+                    }
+
+                    //PlottableSignalXY newPlot = _window.TheGraph.plt.PlotSignalXY(timeStamps, values, label: "Device " + kvp.Key.ToString(), color: plotColor);
+                    PlottableSignalXY newPlot = _window.TheGraph.plt.PlotSignalXY(timeStamps, differencesFromMean, label: "Device " + kvp.Key.ToString(), color: plotColor);
+                    //PlottableSignalXY newPlot = _window.TheGraph.plt.PlotSignalXY(timeStamps, standardDeviationCount, label: "Device " + kvp.Key.ToString(), color: plotColor);
+
+                }
+                _window.TheGraph.plt.Resize();
             }
         }
 
@@ -165,12 +210,18 @@ namespace UI
 
         private void ExportButton_Click(object sender, RoutedEventArgs e)
         {
-
+            //System.IO.Directory.GetCurrentDirectory();
+            _sink.DeviceRegistrar.Export("C:/Users/Chris/Desktop/test.csv");
         }
 
         private void ImportButton_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void ProcessButton_Click(object sender, RoutedEventArgs e)
+        {
+            _sink.ProcessRaw();
         }
     }
 }

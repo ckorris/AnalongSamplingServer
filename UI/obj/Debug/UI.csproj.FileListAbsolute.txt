@@ -59,3 +59,4 @@ C:\Projects\AnalongSamplingServer\UI\bin\Debug\System.Memory.xml
 C:\Projects\AnalongSamplingServer\UI\bin\Debug\System.Numerics.Vectors.xml
 C:\Projects\AnalongSamplingServer\UI\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml
 C:\Projects\AnalongSamplingServer\UI\bin\Debug\System.Threading.Tasks.Extensions.xml
+C:\Projects\AnalongSamplingServer\UI\bin\Debug\SpinAnalysis.pdb
